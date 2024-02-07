@@ -1,12 +1,10 @@
 import './App.css';
-import BioMarkers from './components/BioMarkers';
+import Editor from './components/Editor';
 
 function App() {
   return (
     <div>
-      <BioMarkers title={'Recovery'}/>
-      <BioMarkers title={'Recovery2'}/>
-      <BioMarkers title={'Recovery3'}/>
+      <Editor/>
     </div>
   );
 }
