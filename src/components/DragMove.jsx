@@ -8,7 +8,8 @@ export default function DragMove(props) {
     onDragMove,
     children,
     style,
-    className
+    className,
+    index
   } = props;
 
   const [isDragging, setIsDragging] = useState(false);
@@ -26,7 +27,7 @@ export default function DragMove(props) {
   };
 
   const handlePointerMove = (e) => {
-    if (isDragging) onDragMove(e);
+    if (isDragging) onDragMove(e,index);
 
     onPointerMove(e);
   };
