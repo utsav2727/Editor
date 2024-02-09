@@ -165,6 +165,7 @@ const Canvas = () => {
                     >
                   <TableEditor 
                   key={index} 
+                  // handleDropOnTable={handleDropOnTable} 
                   columns={item.title} 
                   data={item.data}
                   onColumnChange={onColumnChange}
