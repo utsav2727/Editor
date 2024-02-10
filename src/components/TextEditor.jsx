@@ -1,42 +1,46 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './TextEditor.css';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-const TextEditor = ({label, value,onStyleChange, setTextStyle, textStyle}) => {
+const TextEditor = ({label, value,onStyleChange, setTextStyle, textStyle, coreIndex, onDeleteClick, role}) => {
   const editorRef = useRef(null);
   
-  const [textvalue, setValue] = useState('');
+  const [textFocus, setTextFocus] = useState(false);
 
   
   const onChange = (e)=>{
-
-    setValue(e.target.value);
-    console.log('textStyle',textStyle);
-
-    onStyleChange( { id: 1, field: e.target.value, formatter: 
-    { 
-      bold: textStyle.fontWeight=="bold", italic: textStyle?.fontStyle=="italic", underline: textStyle?.textDecoration=="underline", 
-    } 
-    })
+    onStyleChange(e, coreIndex);
     }
-
-  
 
   return (
     <div>
       
-      <div className='flex p-2 items-center'>
+      <div className='relative p-2 items-center'>
         {/* <div>{label}</div> */}
-      <div>
-      
+        
       <textarea
-        placeholder={label} 
-        style={textStyle}
+        // placeholder={label} 
+        style={{...textStyle, width:`${label.length +2}ch`}}
+        onFocus={(e)=>{setTextFocus(true)}}
+        onBlur={(e)=>{
+          setTextFocus(false)
+        }}
         ref={editorRef}
         onChange={(e)=>{onChange(e)}}
-        value={textvalue}
+        value={label}
         draggable={false}
+        className='focus-within:outline-none focus:border-slate-200 focus:border focus:rounded-md'
       ></textarea>
-      </div>
+      {textFocus && <div className='absolute -top-2 -right-2 p-2'>
+        <button onMouseDown={(e)=>{
+          // console.log('clicked!!');
+          onDeleteClick(e, coreIndex,role);
+        }}  className='bg-black rounded-full text-white'>
+          <CloseOutlinedIcon fontSize='small'/>
+        </button>
+        </div>
+      }
       </div>
     </div>
   );

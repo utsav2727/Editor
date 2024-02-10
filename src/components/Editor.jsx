@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import ToolbarItem from './ToolbarItem';
 import Canvas from './Canvas';
 import { reportDATA } from './dummyAPI';
+// import { Bars4Icon } from '@heroicons/react/24/outline';
+
 
 const Editor = () => {
 
@@ -72,7 +74,6 @@ const Editor = () => {
   
 
   useEffect(()=>{
-
     fetch('https://dummyjson.com/products?limit=10&skip=10&select=title,price')
     .then(res => res.json())
     .then((data)=>setFetchProducts(data.products));
@@ -83,23 +84,22 @@ const Editor = () => {
       <div className="w-1/4 bg-gray-200 p-4">
         <div>
           <h2 className='font-bold'>Headers</h2>
+          {/* <Bars4Icon className="h-6 w-6" /> */}
+
           <ToolbarItem tag={'input'} title="Gujarat Bank" onDragStart={handleDragStart} />
         </div>
-        <div>
+        <div className='py-2'>
           <label for="countries" class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">Select API Endpoint</label>
-          <select onChange={(e)=>{handleSelectAPI(e)}} id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <select onChange={(e)=>{handleSelectAPI(e)}} id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  active:ring-blue-500 focus-visible:outline-none focus-within:border-blue-500">
             <option selected>Choose a API Endpoint</option>
             <option value="dummayAPI">dummy API</option>
             <option value="products">Products</option>
           </select>
-
-
-          <h3 className='font-bold mt-6'>Columns</h3>
+        </div>
+        <h3 className='font-bold'>Columns</h3>
           {APIdata.map((item) => {
             return <ToolbarItem tag={'columns'} title={item} onDragStart={handleDragStart} />
           })}
-
-        </div>
       </div>
 
       {/* Right Canvas */}

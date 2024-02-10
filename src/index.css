@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.icon-button { 
+    @apply h-7 w-7 rounded-sm hover:bg-gray-200
+ }

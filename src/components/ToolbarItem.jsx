@@ -8,7 +8,7 @@ const ToolbarItem = ({ title, onDragStart, tag }) => {
 
   return (
     <div
-      className="p-2 cursor-pointer hover:bg-gray-200"
+      className="p-2 cursor-pointer border-b border-slate-400 rounded-sm hover:bg-gray-400"
       draggable
       onDragStart={(e) => onDragStart(e, title, tag)}
     >

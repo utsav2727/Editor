@@ -3,19 +3,28 @@ import React, { useState } from 'react';
 import DragMove from './DragMove';
 import TextEditor from './TextEditor';
 import TableEditor from './TableEditor';
+import FormatBoldOutlinedIcon from '@mui/icons-material/FormatBoldOutlined';
+import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined';
+import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined';
+import FormatAlignLeftOutlinedIcon from '@mui/icons-material/FormatAlignLeftOutlined';
+import FormatAlignRightOutlinedIcon from '@mui/icons-material/FormatAlignRightOutlined';
+import FormatAlignCenterOutlinedIcon from '@mui/icons-material/FormatAlignCenterOutlined';
+import AllOutOutlinedIcon from '@mui/icons-material/AllOutOutlined';
+import TablePreview from './TablePreview';
+import TableContent from './TableContent';
 
 const Canvas = () => {
   const [nodePosition, setNodePostion] = useState([]);
   const [textStyle, setTextStyle] = useState({});
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({status:false, data:[]});
 
-  const handleShowModal = ()=>{
-    setShowModal(true)
+  const handleShowModal = (data)=>{
+    setShowModal({status:true, data:data})
   }
 
   const handleCloseModal = ()=>{
-    setShowModal(false);
+    setShowModal({status:false, data:[]});
   }
 
 
@@ -49,6 +58,7 @@ const Canvas = () => {
     e.preventDefault();
   };
 
+  // console.log('canvasItemsBody', canvasItems);
   const handleDrop = (e, value, index) => {
     e.preventDefault();
     e.stopPropagation();
@@ -62,6 +72,8 @@ const Canvas = () => {
       console.log('inside table')
       const draggedItem = JSON.parse(e.dataTransfer.getData('text'));
       let modifiedElement = canvasItems[index];
+
+      console.log('canvasItems', canvasItems);
       modifiedElement.title = [...modifiedElement.title, ...draggedItem.title];
       modifiedElement.data = modifiedElement.data.map((item, index)=>{
         return {...item, ...draggedItem.data[index]}
@@ -69,8 +81,12 @@ const Canvas = () => {
 
       canvasItems[index] = modifiedElement;
 
+      const convertData = canvasItems.filter((item)=>item.type=="columns").map((item)=>{
+        return item.title
+      });
+
       setCanvasItems([...canvasItems]);
-      reportTemplate.schema.additionalInfo.dataFields = [...modifiedElement.title];
+      reportTemplate.schema.additionalInfo.dataFields = [...convertData];
       setReportTemplate(reportTemplate)
 
     }
@@ -85,6 +101,8 @@ const Canvas = () => {
 
     setCanvasItems([...coreIndexElement]);
 
+    console.log('canvasItems table', canvasItems);
+
     const convertData = coreIndexElement.filter((item)=>item.type=="columns").map((item)=>{
       return item.title
     });
@@ -97,12 +115,14 @@ const Canvas = () => {
   const [reportTemplate, setReportTemplate] = useState({
     templateId: 1, schema: {
       additionalInfo: {
-        dataFields: [], Header: [{
-          id: 1, field: "", formatter:
-          {
-            bold: false, italic: false, underline: false,
-          },
-        },],
+        dataFields: [], Header: [
+          // {
+          // id: 1, field: "", formatter:
+          // {
+          //   bold: false, italic: false, underline: false,
+          // },
+          // },
+      ],
         SubHeader:
           [{
             field: "Branch Code- 12412", formatter: {
@@ -112,7 +132,8 @@ const Canvas = () => {
             field: "Report NO. ", formatter: {
               bold: false, italic: false, underline: false,
             },
-          },], Footer: [{
+          },], 
+          Footer: [{
             field: "Clerk/Cashier", formatter: {
               bold: false, italic: false, underline: false,
             },
@@ -128,21 +149,60 @@ const Canvas = () => {
 
   console.log('reportTemplate--', reportTemplate);
 
-  const onStyleChange = (item) => {
-    reportTemplate.schema.additionalInfo.Header = item;
+  const onStyleChange = (e, coreIndex) => {
+    console.log('canvasItem--', canvasItems);
+    console.log('coreIndex--', coreIndex);
+    
+    canvasItems[coreIndex] = {...canvasItems[coreIndex], title:e.target.value};
+
+    setCanvasItems([...canvasItems]);
+
+    const convertData = canvasItems.filter((item)=>item.type=="text");
+
+    reportTemplate.schema.additionalInfo.Header = [...convertData];
     setReportTemplate(reportTemplate)
+  }
+
+  const onDeleteClick = (e, coreIndex,role)=>{
+    console.log('canvasItem--', canvasItems);
+    console.log('coreIndex--', coreIndex);
+
+    if (coreIndex > -1) { 
+      canvasItems.splice(coreIndex, 1); 
+    }
+    console.log('canvasItems removed --', canvasItems)
+
+    setCanvasItems([...canvasItems]);
+
+    if(role==='text'){
+      const convertData = canvasItems.filter((item)=>item.type=="text");
+      reportTemplate.schema.additionalInfo.Header = [...convertData];
+      setReportTemplate(reportTemplate)
+    }else if(role==='table'){
+      const convertData = canvasItems.filter((item)=>item.type=="columns");
+      reportTemplate.schema.additionalInfo.dataFields= convertData.map((item)=>{
+        return item.title
+      })
+      // console.log('convertData',convertData);
+      // let modifiedElement = canvasItems[index];
+      // reportTemplate.schema.additionalInfo.Header = [...convertData];
+
+      setReportTemplate(reportTemplate)
+    }
+
   }
 
   return (
     <div
-      className="flex flex-col overflow-clip bg-white w-3/4"
+      className="flex flex-col overflow-y-auto overflow-x-clip bg-white w-3/4"
     >
-      <div className='flex'>
-        <button className='border border-slate-400 px-3' onClick={() => setTextStyle({ fontWeight: "bold" })}>B</button>
-        <button className='border border-slate-400 px-3' onClick={() => setTextStyle({ fontStyle: "italic" })}>I</button>
-        <button className='border border-slate-400 px-3' onClick={() => setTextStyle({ textDecoration: "underline" })}>U</button>
+      <h1 className='text-2xl font-bold text-center'>Create Your Report Template</h1>
+      <div className='flex gap-1 bg-colorPanel border rounded-sm p-1 border-slate-300'>
+        <button className='icon-button' onClick={() => setTextStyle({ fontWeight: "bold" })}><FormatBoldOutlinedIcon fontSize='small'/></button>
+        <button className='icon-button' onClick={() => setTextStyle({ fontStyle: "italic" })}><FormatItalicOutlinedIcon fontSize='small'/></button>
+        <button className='icon-button' onClick={() => setTextStyle({ textDecoration: "underline" })}><FormatUnderlinedOutlinedIcon fontSize='small'/></button>
       </div>
-      <div className='flex flex-col overflow-clip h-full bg-white border border-slate-600'
+      <div className='flex flex-col overflow-y-auto overflow-x-clip h-full bg-white border border-l-slate-300 border-r-slate-300 border-b-slate-300'
         onDragOver={handleDragOver}
         onDrop={(e)=>{handleDrop(e,'text')}}
       >
@@ -154,9 +214,14 @@ const Canvas = () => {
                   transform: `translateX(${nodePosition[index]?.x}px) translateY(${nodePosition[index]?.y}px)`
                 }}
               >
-                {console.log(item)}
                 {item.type == 'text' &&
-                  <TextEditor textStyle={textStyle} setTextStyle={setTextStyle} onStyleChange={onStyleChange} label={item.title} />
+                  <TextEditor 
+                  coreIndex={index}
+                  textStyle={textStyle} setTextStyle={setTextStyle} onStyleChange={onStyleChange} label={item.title} 
+                  onDeleteClick={onDeleteClick}
+                  role={'text'}
+                  />
+                  
                 }
                 {item.type == 'columns' &&
                   <div 
@@ -172,6 +237,8 @@ const Canvas = () => {
                   handleCloseModal={handleCloseModal}
                   handleShowModal ={handleShowModal}
                   coreIndex={index}
+                  role={'table'}
+                  onDeleteClick={onDeleteClick}
                   />
                   </div>
                 }
@@ -182,26 +249,21 @@ const Canvas = () => {
         ))}
         
       </div>
-      {showModal ? (
+      {showModal.status ? (
         <>
           <div
             className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            <div className="">
               {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                <div>
+                <TablePreview 
                 
-                <div className="relative p-6 flex-auto">
-                  <p className="my-4 text-blueGray-500 leading-relaxed">
-                    I always felt like I could do anything. That’s the main
-                    thing people are controlled by! Thoughts- their perception
-                    of themselves! They're slowed down by their perception of
-                    themselves. If you're taught you can’t do anything, you
-                    won’t do anything. I was taught I could do everything.
-                  </p>
-                </div>
+                  />
                 {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                </div>
+                <div className="flex items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
@@ -210,7 +272,7 @@ const Canvas = () => {
                     Close
                   </button>
                   <button
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    className="bg-primary text-white active:bg-blue-600 font-bold uppercase text-sm px-2 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
