@@ -259,7 +259,7 @@ const Canvas = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                 <div>
                 <TablePreview 
-                
+                  data={showModal.data}
                   />
                 {/*footer*/}
                 </div>

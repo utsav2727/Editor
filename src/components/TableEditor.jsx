@@ -19,6 +19,7 @@ const TableEditor = ({ columns, data, handleShowModal,
     showModal, onColumnChange, coreIndex, onDeleteClick
     , role
 }) => {
+    
 
     // console.log('data', data);
     return (

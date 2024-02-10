@@ -1,14 +1,14 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import './table.css'
 
-const TablePreview = ({ headers, minCellWidth, tableContent }) => {
+const TablePreview = ({ data }) => {
     const [drag, setDrag] = useState(false);
 
-    const data = [
-        ['Erik',    '27.10.1990', 'Barcelona'],
-        ['Andrea',  '16.10.1993', 'Barcelona'],
-        ['Paula',   '06.03.2005', 'Barcelona']
-    ];
+    // const data = [
+    //     ['Erik',    '27.10.1990', 'Barcelona'],
+    //     ['Andrea',  '16.10.1993', 'Barcelona'],
+    //     ['Paula',   '06.03.2005', 'Barcelona']
+    // ];
 
     const handleStart = (e, row, col) => {
 
@@ -39,19 +39,17 @@ const TablePreview = ({ headers, minCellWidth, tableContent }) => {
     }
 
     return(
-        <table>
+        <table className='m-12'>
             <thead>
                         <tr>
                             {
-                                ['Utsav','Patel'].map((column, index) => {
+                                data.columns.map((column, index) => {
                                     return (
                                         <th>
-                                            <input
-                                                className="min-w-full w-16"
-                                                value={column}
-                                                // onChange={(e) => { onColumnChange(e, coreIndex, index) }}
-                                                // className="min-w-full w-16"
-                                            />
+                                            <div
+                                                className="min-w-full w-16 text-start">
+                                                {column.modifiedTitle}
+                                            </div>
 
                                         </th>)
                                 })
@@ -59,21 +57,28 @@ const TablePreview = ({ headers, minCellWidth, tableContent }) => {
                         </tr>
             </thead>
             <tbody>
-                {data.map((row, i) => 
+                {data.data.map((row, i) => 
                     <tr key = {i}>
-                        {row.map((col, j) => 
-                            <td  key = {j} id = {`${i}${j}`}>
-                                {data[i][j]}
+                        {console.log(data.columns)}
+                        {data.columns.map((col, j) => 
+                            (<td  key = {j} id = {`${i}${j}`}>
+                                {console.log(data.data[i][j])}
+                                {console.log(data.data[i][col.title])}
+                                {data.data[i][col.title]}
                                 <div 
                                     className   = 'Dragger'
                                     draggable   = {true}
                                     onDragStart = {(e) => handleStart(e, i, j)}
                                     onDrag      = {(e) => handleMove(e, i, j)}
                                 />
-                            </td>
-                        )}
+                            </td>)
+                            )
+                            }
                     </tr>
                 )}
+                {/* {data.data.map((item) => {
+                            return <Rows item={item} columns={data.columns} />
+                        })} */}
             </tbody>
         </table>
     );
