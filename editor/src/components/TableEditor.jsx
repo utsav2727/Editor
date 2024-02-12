@@ -8,7 +8,7 @@ import ReactPopover from './ReactPopover';
 
 export const Rows = ({ item, columns }) => {
     return (
-        <tr className='select-none'>
+        <tr>
             {columns.map((column) => {
                 return <td>{item[column.title]}</td>
             })}

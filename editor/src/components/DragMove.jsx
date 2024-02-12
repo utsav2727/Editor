@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from "react";
+
+export default function DragMove(props) {
+  const {
+    onPointerDown,
+    onPointerUp,
+    onPointerMove,
+    onDragMove,
+    children,
+    style,
+    className,
+    index
+  } = props;
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handlePointerDown = (e) => {
+    setIsDragging(true);
+
+    onPointerDown(e);
+  };
+
+  const handlePointerUp = (e) => {
+    setIsDragging(false);
+
+    onPointerUp(e);
+  };
+
+  const handlePointerMove = (e) => {
+    if (isDragging) onDragMove(e,index);
+
+    onPointerMove(e);
+  };
+
+  useEffect(() => {
+    window.addEventListener('pointerup', handlePointerUp);
+
+    return () => {
+      window.removeEventListener('pointerup', handlePointerUp);
+    }
+  }, []);
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerMove={handlePointerMove}
+      style={style}
+      className={className}
+    >
+      {children}
+    </div>
+  );
+}
+
+DragMove.defaultProps = {
+  onPointerDown: () => {},
+  onPointerUp: () => {},
+  onPointerMove: () => {}
+};

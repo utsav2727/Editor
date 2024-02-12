@@ -70,7 +70,7 @@ const TablePreview = ({ data, setShowModal, handleSaveButton }) => {
                         {
                             columns.map((column, index) => {
                                 return (
-                                    <th style={column.styles}>
+                                    <th>
                                         <div
                                             id={`col-${index}`}
                                             className="min-w-full w-16 text-start hover:cursor-move"

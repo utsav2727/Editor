@@ -65,10 +65,15 @@ const Canvas = () => {
 
     if(value=='text'){
       console.log('inside text');
-      try {
-        const draggedItem = JSON.parse(e.dataTransfer.getData('text'));
+      const draggedItem = JSON.parse(e.dataTransfer.getData('text'));
       console.log('draggedItem', draggedItem);
       setCanvasItems((prevItems)=> [...prevItems, draggedItem]);
+
+      // console.log('canvasItems',canvasItems)
+
+      // const convertData = canvasItems.filter((item)=>item.type=="text");
+
+      // console.log('convertData---', convertData)
       if(draggedItem.role=='header'){
         const convertData = canvasItems.filter((item)=>item.role=="header");
         reportTemplate.schema.additionalInfo.Header = [...convertData,draggedItem];
@@ -82,10 +87,6 @@ const Canvas = () => {
         reportTemplate.schema.additionalInfo.Footer = [...convertData,draggedItem];
         setReportTemplate(reportTemplate)
       }
-      } catch (error) {
-        console.log(error)
-      }
-      
       
     }else if(value == 'table'){
       console.log('inside table')
@@ -93,27 +94,23 @@ const Canvas = () => {
 
       console.log('draggedItem---', draggedItem);
 
-      if(draggedItem.type=="columns"){
-        let modifiedElement = canvasItems[index];
+      let modifiedElement = canvasItems[index];
 
-        console.log('canvasItems', canvasItems);
-        modifiedElement.title = [...modifiedElement.title, ...draggedItem.title];
-        modifiedElement.data = modifiedElement.data.map((item, index)=>{
-          return {...item, ...draggedItem.data[index]}
-        })
-  
-        canvasItems[index] = modifiedElement;
-  
-        const convertData = canvasItems.filter((item)=>item.type=="columns").map((item)=>{
-          return item.title
-        });
-  
-        setCanvasItems([...canvasItems]);
-        reportTemplate.schema.additionalInfo.dataFields = [...convertData];
-        setReportTemplate(reportTemplate)
-      }
+      console.log('canvasItems', canvasItems);
+      modifiedElement.title = [...modifiedElement.title, ...draggedItem.title];
+      modifiedElement.data = modifiedElement.data.map((item, index)=>{
+        return {...item, ...draggedItem.data[index]}
+      })
 
-      
+      canvasItems[index] = modifiedElement;
+
+      const convertData = canvasItems.filter((item)=>item.type=="columns").map((item)=>{
+        return item.title
+      });
+
+      setCanvasItems([...canvasItems]);
+      reportTemplate.schema.additionalInfo.dataFields = [...convertData];
+      setReportTemplate(reportTemplate)
 
     }
   };
@@ -211,24 +208,10 @@ const Canvas = () => {
 
     setCanvasItems([...canvasItems]);
 
-    if(canvasItems[coreIndex].role=='header'){
-      const convertData = canvasItems.filter((item)=>item.role=="header");
-      reportTemplate.schema.additionalInfo.Header = [...convertData];
-      setReportTemplate(reportTemplate)
-    }else if(canvasItems[coreIndex].role=='subheader'){
-      const convertData = canvasItems.filter((item)=>item.role=="subheader");
-      reportTemplate.schema.additionalInfo.SubHeader = [...convertData];
-      setReportTemplate(reportTemplate)
-    }else if(canvasItems[coreIndex].role=='footer'){
-      const convertData = canvasItems.filter((item)=>item.role=="footer");
-      reportTemplate.schema.additionalInfo.Footer = [...convertData];
-      setReportTemplate(reportTemplate)
-    }
+    const convertData = canvasItems.filter((item)=>item.type=="text");
 
-    // const convertData = canvasItems.filter((item)=>item.type=="text");
-
-    // reportTemplate.schema.additionalInfo.Header = [...convertData];
-    // setReportTemplate(reportTemplate)
+    reportTemplate.schema.additionalInfo.Header = [...convertData];
+    setReportTemplate(reportTemplate)
   }
 
   
@@ -236,44 +219,18 @@ const Canvas = () => {
   const onDeleteClick = (e, coreIndex,role)=>{
     console.log('canvasItem--', canvasItems);
     console.log('coreIndex--', coreIndex);
-    const modified = canvasItems.map((item)=>item);
-    console.log(canvasItems[coreIndex]);
+
     if (coreIndex > -1) { 
       canvasItems.splice(coreIndex, 1); 
     }
     console.log('canvasItems removed --', canvasItems)
+
     setCanvasItems([...canvasItems]);
-    
 
     if(role==='text'){
-      // const convertData = canvasItems.filter((item)=>item.type=="text");
-      // reportTemplate.schema.additionalInfo.Header = [...convertData];
-      // setReportTemplate(reportTemplate)
-      console.log(modified[coreIndex]);
-      if(modified[coreIndex]?.role=='header'){
-        if (coreIndex > -1) { 
-          modified.splice(coreIndex, 1); 
-        }
-        const convertData = modified.filter((item)=>item.role=="header");
-        reportTemplate.schema.additionalInfo.Header = [...convertData];
-        setReportTemplate(reportTemplate);
-      }else if(modified[coreIndex]?.role=='subheader'){
-        if (coreIndex > -1) { 
-          modified.splice(coreIndex, 1); 
-        }
-        const convertData = modified.filter((item)=>item.role=="subheader");
-        reportTemplate.schema.additionalInfo.SubHeader = [...convertData];
-        setReportTemplate(reportTemplate);
-      }else if(modified[coreIndex]?.role=='footer'){
-        if (coreIndex > -1) { 
-          modified.splice(coreIndex, 1); 
-        }
-        const convertData = modified.filter((item)=>item.role=="footer");
-        reportTemplate.schema.additionalInfo.Footer = [...convertData];
-        setReportTemplate(reportTemplate);
-      }
-      
-
+      const convertData = canvasItems.filter((item)=>item.type=="text");
+      reportTemplate.schema.additionalInfo.Header = [...convertData];
+      setReportTemplate(reportTemplate)
     }else if(role==='table'){
       const convertData = canvasItems.filter((item)=>item.type=="columns");
       reportTemplate.schema.additionalInfo.dataFields= convertData.map((item)=>{
@@ -300,37 +257,15 @@ const Canvas = () => {
     setShowModal(false);
   }
 
-  const handleStyles = (type)=>{
-    if(type==='bold'){
-      if(textStyle.fontWeight!=="bold"){
-        setTextStyle({ ...textStyle, fontWeight: "bold" })
-      }else{
-        setTextStyle({...textStyle, fontWeight: "normal" })
-      }
-    }else if(type==='italic'){
-      if(textStyle.fontStyle!=="italic"){
-        setTextStyle({...textStyle, fontStyle: "italic" })
-      }else{
-        setTextStyle({...textStyle, fontStyle: "normal" })
-      }
-    } else if(type==='underline'){
-      if(textStyle.textDecoration!=="underline"){
-        setTextStyle({...textStyle, textDecoration: "underline" })
-      }else{
-        setTextStyle({...textStyle, textDecoration: "none" })
-      }
-    }
-  }
-
   return (
     <div
       className="flex flex-col overflow-y-auto overflow-x-clip bg-white w-3/4"
     >
       <h1 className='text-2xl font-bold text-center'>Create Your Report Template</h1>
       <div className='flex gap-1 bg-secondary text-white border rounded-sm p-1 border-slate-300'>
-        <button className='icon-button' onClick={() => handleStyles('bold')}><FormatBoldOutlinedIcon fontSize='small'/></button>
-        <button className='icon-button' onClick={() => handleStyles('italic')}><FormatItalicOutlinedIcon fontSize='small'/></button>
-        <button className='icon-button' onClick={() => handleStyles('underline')}><FormatUnderlinedOutlinedIcon fontSize='small'/></button>
+        <button className='icon-button' onClick={() => setTextStyle({ fontWeight: "bold" })}><FormatBoldOutlinedIcon fontSize='small'/></button>
+        <button className='icon-button' onClick={() => setTextStyle({ fontStyle: "italic" })}><FormatItalicOutlinedIcon fontSize='small'/></button>
+        <button className='icon-button' onClick={() => setTextStyle({ textDecoration: "underline" })}><FormatUnderlinedOutlinedIcon fontSize='small'/></button>
       </div>
       <div className='flex flex-col overflow-y-auto overflow-x-clip h-full bg-white border border-l-slate-300 border-r-slate-300 border-b-slate-300'
         onDragOver={handleDragOver}
