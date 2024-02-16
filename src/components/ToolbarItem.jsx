@@ -1,7 +1,7 @@
 // src/components/ToolbarItem.js
 import React from 'react';
 
-const ToolbarItem = ({ title, onDragStart, tag, role }) => {
+const ToolbarItem = ({ title, onDragStart, tag, role , borderStyle }) => {
 
   
 
@@ -9,11 +9,12 @@ const ToolbarItem = ({ title, onDragStart, tag, role }) => {
   return (
     <div>
     <div
-      className="p-2 cursor-pointer border-b border-slate-400 rounded-sm hover:bg-hover"
+      className="py-2 px-2 cursor-pointer border-b border-slate-400 rounded-sm hover:bg-hover"
       draggable
-      onDragStart={(e) => onDragStart(e, title, tag,role)}
+      onDragStart={(e) => onDragStart(e, title, tag,role,borderStyle)}
     >
-      {title}
+      {/* {title} */}
+      {(role=='header' && title=="")? <div className={`border border-${borderStyle}`}></div>: title }
     </div>
     </div>
   );

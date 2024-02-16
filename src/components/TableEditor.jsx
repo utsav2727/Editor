@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AllOutOutlinedIcon from '@mui/icons-material/AllOutOutlined';
-import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
+// import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
+import ZoomOutMapTwoToneIcon from '@mui/icons-material/ZoomOutMapTwoTone';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ReactPopover from './ReactPopover';
@@ -10,7 +11,7 @@ export const Rows = ({ item, columns }) => {
     return (
         <tr className='select-none'>
             {columns.map((column) => {
-                return <td>{item[column.title]}</td>
+                return <td>{item[column.field]}</td>
             })}
         </tr>
     )
@@ -22,7 +23,7 @@ const TableEditor = ({ columns, data, handleShowModal,
     onColumnDelete
 }) => {
 
-    console.log('columns---', columns);
+    // console.log('columns---', columns);
 
     const [textFocus, setTextFocus] = useState(false);
 
@@ -35,9 +36,9 @@ const TableEditor = ({ columns, data, handleShowModal,
                         <button
                             // className=''
                             onClick={() => { handleShowModal({ columns, data, coreIndex }) }}
-                            className='icon-button m-1'
+                            className='bg-third hover:bg-hoverSecondary rounded-xl text-white m-1 p-1'
                         >
-                            <OpenInFullOutlinedIcon fontSize='small' />
+                            <ZoomOutMapTwoToneIcon style={{fontSize:"14px"}} />
                         </button>
 
                     </div>
@@ -53,7 +54,7 @@ const TableEditor = ({ columns, data, handleShowModal,
                                             onMouseLeave={(e) => {
                                                 setTextFocus(false)
                                             }}
-                                            className='relative' style={column.styles}>
+                                            className='relative' style={column.formatter}>
                                             {textFocus && 
                                             <div className='cursor-pointer absolute right-0 top-0 h-6 w-6 bg-third hover:bg-hoverSecondary'>
                                             <ReactPopover
@@ -72,7 +73,7 @@ const TableEditor = ({ columns, data, handleShowModal,
                                             </div>   
                                                 }
                                             <input
-                                                value={column.modifiedTitle}
+                                                value={column.caption}
                                                 onChange={(e) => { onColumnChange(e, coreIndex, index) }}
                                                 className="min-w-full w-16 focus-within:outline-none"
 
@@ -92,7 +93,7 @@ const TableEditor = ({ columns, data, handleShowModal,
                         </div>}
                     </thead>
                     <tbody>
-                        {data.map((item) => {
+                        {data.filter((item, index)=>index<5).map((item) => {
                             return <Rows item={item} columns={columns} />
                         })}
                     </tbody>

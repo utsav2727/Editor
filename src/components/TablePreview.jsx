@@ -52,7 +52,7 @@ const TablePreview = ({ data, setShowModal, handleSaveButton }) => {
             console.log(column, `width: ${endSize}px`);
 
             console.log(columns);
-            columns[col] = { ...columns[col], styles: { width: `${endSize}px` } }
+            columns[col] = { ...columns[col], formatter: { width: `${endSize}px` } }
 
             setColumns([...columns]);
 
@@ -70,7 +70,7 @@ const TablePreview = ({ data, setShowModal, handleSaveButton }) => {
                         {
                             columns.map((column, index) => {
                                 return (
-                                    <th style={column.styles}>
+                                    <th style={column.formatter}>
                                         <div
                                             id={`col-${index}`}
                                             className="min-w-full w-16 text-start hover:cursor-move"
@@ -79,7 +79,7 @@ const TablePreview = ({ data, setShowModal, handleSaveButton }) => {
                                             onDragOver={() => handleDragOver(index)}
                                             onDragEnd={() => setDraggedIndex(null)}
                                         >
-                                            {column.modifiedTitle}
+                                            {column.caption}
 
                                         </div>
 
@@ -95,7 +95,7 @@ const TablePreview = ({ data, setShowModal, handleSaveButton }) => {
                             (<td key={j} id={`${i}${j}`}>
                                 {/* {console.log(data.data[i][j])} */}
                                 {/* {console.log(data.data[i][col.title])} */}
-                                {data.data[i][col.title]}
+                                {data.data[i][col.field]}
                                 <div
                                     className='Dragger'
                                     draggable={true}
