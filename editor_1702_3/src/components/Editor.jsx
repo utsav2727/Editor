@@ -16,8 +16,6 @@ import FormatAlignCenterOutlinedIcon from '@mui/icons-material/FormatAlignCenter
 import { FormatAlignCenterOutlined } from '@mui/icons-material';
 import * as html2pdf from 'html2pdf.js'
 import ReactToPrint from 'react-to-print';
-import Preview from './Preview';
-import { Link, useNavigate } from 'react-router-dom';
 // import { downloadPdfDocument } from './downloadPdf';
 
 
@@ -37,24 +35,7 @@ const Editor = () => {
     setCanvasItems:null
     ,updateTemplateTextField:null
     ,canvasItems:null
-  });
-
-  const getHtmlContent = () => {
-    console.log(ref.current);
-    if (ref.current) {
-      return ref.current.innerHTML;
-    }
-    return '';
-  };
-
-  const navigate  = useNavigate();
-
-  const handlegetHtmlContent = ()=>{
-    // setPrinter(true);
-    window.open(`/preview?htmlContent=${encodeURIComponent(getHtmlContent())}`,'_blank');
-    // setPrinter(false);
-    // navigate(`/preview?htmlContent=${encodeURIComponent(getHtmlContent())}`,{});
-  }
+  })
 
   const handleDragStart = (e, title, tag,role,borderStyle) => {
     if (tag == "columns") {
@@ -336,7 +317,7 @@ const Editor = () => {
           <div className='flex gap-2'>
             <button onClick={()=>{handleAddTemplate()}} className='bg-third rounded-sm hover:bg-hoverSecondary p-1 px-2'>Add Template</button>
             
-            {/* <ReactToPrint
+            <ReactToPrint
               bodyClass="print-agreement"
               content={(printepress) => ref.current}
               onBeforeGetContent={async ()=>{
@@ -350,23 +331,16 @@ const Editor = () => {
               trigger={() => (
                 <button className='bg-third rounded-sm hover:bg-hoverSecondary p-1 px-2'>Save as PDF</button>
             )}
-            /> */}
-          <button onClick={()=>{handlegetHtmlContent()}} className='bg-third rounded-sm hover:bg-hoverSecondary p-1 px-2'>         
+            />
           
-           {/* <Link target='_blank' to={`/preview?htmlContent=${encodeURIComponent(getHtmlContent())}`}> */}
-        Go to Preview
-        {/* </Link>  */}
-        
-        </button>
             </div>
       </div>
-      <div ref={ref} className='h-[88vh] overflow-auto' style={{zoom: printer? '72%': '0%'}} id="scrollableDiv">
+      <div ref={ref} className='h-[88vh] overflow-auto ' id="scrollableDiv">
       {template.map((item, index)=>{
         return (<Canvas printer={printer} setCurrentOpenTemplate={setCurrentOpenTemplate} templateIndex={index} handleFinalTemplateUpdate={handleFinalTemplateUpdate}/>)
       }) 
       }
       </div>
-      {/* <Preview  template={template} ref={ref} printer={printer} setCurrentOpenTemplate={setCurrentOpenTemplate} handleFinalTemplateUpdate={handleFinalTemplateUpdate} /> */}
       </div>
     </div>
   );

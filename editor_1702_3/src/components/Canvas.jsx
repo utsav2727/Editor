@@ -493,7 +493,6 @@ const Canvas = ({handleFinalTemplateUpdate,templateIndex,setCurrentOpenTemplate,
           <div key={index} className="mb-4">
             <DragMove style={{width:"fit-content"}} index={index} onDragMove={handleDragMove}>
               <div
-              id='transform-div'
                 style={{
                   transform: `translateX(${nodePosition[index]?.x}px) translateY(${nodePosition[index]?.y}px)`
                 }}

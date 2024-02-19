@@ -4,36 +4,36 @@ table, th, td{
   border:1px solid black;
   border-collapse: collapse;
 }
-/* @media print { */
-  /* #scrollableDiv {
+@media print {
+  #scrollableDiv {
     width: 100% !important;
     height: 100% !important;
     overflow: visible;
-  } */
+  }
   /* @page { size: letter; margin: 0in 0in; width: 816px; height: 1056px; } */
-  /* #line{ */
+  #line{
     /* width:100vw !important; */
-  /* } */
+  }
 
-  /* #table-div{ */
+  #table-div{
     /* zoom: 72%; */
-  /* } */
+  }
 
-  /* #print-canvas{ */
+  #print-canvas{
     /* margin: auto; */
-    /* height: 138.5vh; */
-    /* overflow-x: visible; */
-    /* zoom:72%; */
+    height: 138.5vh;
+    overflow-x: visible;
+    zoom:72%;
     /* width: 80vw; */
-  /* } */
-/* 
+  }
+
   #table-border{
     border: none;
   }
   #display-none{
     display: none;
-  } */
-/* } */
+  }
+}
 
 .print-canvas{
   height: 85vh;
